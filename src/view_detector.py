@@ -7,8 +7,8 @@ _LEFT_HIP = 23
 _RIGHT_HIP = 24
 
 # Thresholds for shoulder_width / torso_height ratio
-_FRONT_THRESHOLD = 0.55   # above this → front-facing
-_SIDE_THRESHOLD = 0.30    # below this → side-facing
+_FRONT_THRESHOLD = 0.40   # above this → front-facing
+_SIDE_THRESHOLD = 0.20    # below this → side-facing
 # Between these two → "unclear" (diagonal)
 
 _HYSTERESIS_FRAMES = 8  # require N consecutive frames before switching
@@ -25,6 +25,7 @@ class ViewDetector:
         self._pending_view = "front"
         self._pending_count = 0
         self._near_side = "left"
+        self._last_ratio = 0.0
 
     def detect_view(self, result):
         """Detect whether the person is facing front, side, or at an unclear angle.
@@ -50,9 +51,11 @@ class ViewDetector:
         torso_height = (left_torso + right_torso) / 2
 
         if torso_height < 0.01:  # avoid division by zero
+            self._last_ratio = 0.0
             raw_view = self._current_view
         else:
             ratio = shoulder_width / torso_height
+            self._last_ratio = ratio
             if ratio > _FRONT_THRESHOLD:
                 raw_view = "front"
             elif ratio < _SIDE_THRESHOLD:
@@ -86,3 +89,8 @@ class ViewDetector:
     def near_side(self):
         """Which side of the body is closer to the camera in side mode."""
         return self._near_side
+
+    @property
+    def debug_ratio(self):
+        """Last computed shoulder_width / torso_height ratio (for tuning)."""
+        return self._last_ratio

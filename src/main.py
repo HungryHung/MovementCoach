@@ -44,7 +44,8 @@ def main():
         draw_skeleton(frame, result, has_alerts=False)
 
         # Status bar
-        draw_status(frame, calibrated=calibration.is_calibrated(), view_mode=view_mode)
+        draw_status(frame, calibrated=calibration.is_calibrated(),
+                    view_mode=view_mode, debug_ratio=view_detector.debug_ratio)
 
         cv2.imshow("MovementCoach", frame)
 
