@@ -45,7 +45,7 @@ def main():
 
         # Status bar
         draw_status(frame, calibrated=calibration.is_calibrated(),
-                    view_mode=view_mode, debug_ratio=view_detector.debug_ratio)
+                    view_mode=view_mode)
 
         cv2.imshow("MovementCoach", frame)
 

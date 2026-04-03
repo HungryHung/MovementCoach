@@ -48,7 +48,7 @@ def draw_feedback(frame, messages, rep_count=0):
         y += 30
 
 
-def draw_status(frame, calibrated, view_mode, debug_ratio=None):
+def draw_status(frame, calibrated, view_mode):
     """Draw calibration status and view mode at the bottom."""
     h, w = frame.shape[:2]
 
@@ -65,8 +65,3 @@ def draw_status(frame, calibrated, view_mode, debug_ratio=None):
         mode_color = (255, 255, 255)
     cv2.putText(frame, mode_text, (10, h - 70),
                 cv2.FONT_HERSHEY_SIMPLEX, 1.0, mode_color, 3)
-
-    # Debug: show shoulder/torso ratio for threshold tuning
-    if debug_ratio is not None:
-        cv2.putText(frame, f"S/T: {debug_ratio:.2f}", (w - 180, h - 30),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, (180, 180, 180), 2)
