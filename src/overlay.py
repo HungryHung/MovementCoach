@@ -54,8 +54,8 @@ def draw_status(frame, calibrated, view_mode):
 
     cal_text = "Calibrated" if calibrated else "Calibrating..."
     cal_color = (0, 255, 0) if calibrated else (0, 255, 255)
-    cv2.putText(frame, cal_text, (10, h - 20),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.6, cal_color, 2)
+    cv2.putText(frame, cal_text, (10, h - 30),
+                cv2.FONT_HERSHEY_SIMPLEX, 1.2, cal_color, 3)
 
     if view_mode == "unclear":
         mode_text = "Please face camera or turn fully sideways"
@@ -63,5 +63,5 @@ def draw_status(frame, calibrated, view_mode):
     else:
         mode_text = f"Mode: {view_mode.capitalize()}"
         mode_color = (255, 255, 255)
-    cv2.putText(frame, mode_text, (10, h - 50),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.6, mode_color, 2)
+    cv2.putText(frame, mode_text, (10, h - 70),
+                cv2.FONT_HERSHEY_SIMPLEX, 1.0, mode_color, 3)

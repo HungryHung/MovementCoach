@@ -15,6 +15,9 @@ def main():
     calibration = BodyCalibration()
     view_detector = ViewDetector()
 
+    # Make window resizable so video scales when maximized
+    cv2.namedWindow("MovementCoach", cv2.WINDOW_NORMAL)
+
     print("MovementCoach started. Press 'q' to quit.")
 
     while True:
