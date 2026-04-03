@@ -7,7 +7,7 @@ For the detailed implementation plan, see [plan.md](plan.md).
 
 ## Current Status
 
-**Phases 1–4 of 8 complete.** The app captures webcam video, estimates body pose, auto-calibrates to the user's body proportions, and detects whether the user is facing front or sideways. No squat feedback rules yet — that's Phase 5.
+**Phases 1–5 of 8 complete.** The app captures webcam video, estimates body pose, auto-calibrates to the user's body proportions, detects front/side facing, and provides real-time squat form feedback with rep counting. Currently in testing and threshold tuning.
 
 ### What works
 
@@ -15,15 +15,18 @@ For the detailed implementation plan, see [plan.md](plan.md).
 |---------|--------|---------|
 | Webcam capture + display | Done | Mirrored feed, resizable window (`cv2.WINDOW_NORMAL`) |
 | Pose estimation | Done | MediaPipe PoseLandmarker (tasks API v0.10.33), 33 body landmarks |
-| Skeleton overlay | Done | Green skeleton drawn on the video feed |
+| Skeleton overlay | Done | Green when form is good, orange when alerts are active |
 | On-the-fly body calibration | Done | Measures limb segment lengths (3D world landmarks) using rolling median + IQR convergence. Auto-resets for new users. No forced T-pose needed. |
 | View auto-detection | Done | Front / Side / Unclear based on shoulder-width:torso-height ratio with 8-frame hysteresis. Unclear state shows repositioning prompt. |
+| Front-facing squat feedback | Done | Squat depth, knee valgus, left-right balance, stance width |
+| Side-facing squat feedback | Done | Knee-over-toe (calibration-adjusted), forward lean, heel-to-toe weight distribution (2D CoG via Winter's model) |
+| Rep counter | Done | Tracks standing↔squat transitions via knee angle thresholds |
+| Feedback display | Done | Top 2 most important alerts shown (priority-ranked), "+ N more" indicator for additional issues. Clinical/neutral style with degree values. |
 
 ### What's next (not yet implemented)
 
-- **Phase 5** — Squat feedback rules (dual mode: front + side)
-- **Phase 6** — Rep summary (press `s` after a set to see stats)
-- **Phase 7** — Overlay polish (skeleton color cues, smoothed feedback, CoG visualization)
+- **Phase 6** — Rep summary (press `s` after a set to see per-set statistics)
+- **Phase 7** — Overlay polish (smoothed feedback, CoG visualization)
 - **Phase 8** — Testing and threshold tuning
 
 ## Setup
@@ -52,7 +55,12 @@ cd src
 python main.py
 ```
 
-Press `q` to quit. Stand far enough from the camera for your full body to be visible.
+Stand far enough from the camera for your full body to be visible.
+
+| Key | Action |
+|-----|--------|
+| `q` | Quit |
+| `r` | Reset rep counter |
 
 ## Project Structure
 
@@ -69,7 +77,7 @@ MovementCoach/
     ├── pose_estimator.py     # MediaPipe PoseLandmarker wrapper
     ├── body_calibration.py   # on-the-fly limb ratio measurement
     ├── view_detector.py      # auto-detect front vs side facing
-    ├── overlay.py            # skeleton + status text rendering
-    ├── feedback_engine.py    # (not yet created) squat feedback rules
+    ├── overlay.py            # skeleton + feedback text + status rendering
+    ├── feedback_engine.py    # squat feedback rules (front + side), rep counter, CoG
     └── ...
 ```
