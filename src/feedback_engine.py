@@ -35,8 +35,6 @@ _SQUAT_EXIT_ANGLE = 160    # knee angle above this → standing
 _DEPTH_WARNING_ANGLE = 120        # knee angle above this during squat → too shallow
 _VALGUS_RATIO_THRESHOLD = 0.75   # knee_dist / ankle_dist below this → valgus
 _BALANCE_DEVIATION = 0.12         # CoG x deviation from midline (normalized coords)
-_STANCE_TOO_NARROW = 0.7          # ankle_dist / hip_dist below this
-_STANCE_TOO_WIDE = 2.0            # ankle_dist / hip_dist above this
 _FORWARD_LEAN_ANGLE = 145         # shoulder-hip-knee angle below this → leaning
 _MAX_DISPLAY_MESSAGES = 2
 
@@ -230,17 +228,6 @@ class FeedbackEngine:
                 direction = "left" if deviation < 0 else "right"
                 alerts.append((_PRIORITY_MEDIUM,
                                f"Balance: weight shifted {direction} ({abs(deviation):.0%}) — center over feet"))
-
-        # 4. Stance width
-        hip_dist = abs(norm_lm[_LEFT_HIP].x - norm_lm[_RIGHT_HIP].x)
-        if hip_dist > 0.01:
-            stance_ratio = ankle_dist / hip_dist
-            if stance_ratio < _STANCE_TOO_NARROW:
-                alerts.append((_PRIORITY_LOW,
-                               f"Stance narrow ({stance_ratio:.1f}x hip width) — widen feet"))
-            elif stance_ratio > _STANCE_TOO_WIDE:
-                alerts.append((_PRIORITY_LOW,
-                               f"Stance wide ({stance_ratio:.1f}x hip width) — bring feet in"))
 
         return alerts
 
