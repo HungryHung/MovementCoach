@@ -1,5 +1,7 @@
 import cv2
 from pose_estimator import PoseEstimator
+from body_calibration import BodyCalibration
+from view_detector import ViewDetector
 from overlay import draw_skeleton, draw_feedback, draw_status
 
 
@@ -10,6 +12,8 @@ def main():
         return
 
     estimator = PoseEstimator()
+    calibration = BodyCalibration()
+    view_detector = ViewDetector()
 
     print("MovementCoach started. Press 'q' to quit.")
 
@@ -24,11 +28,20 @@ def main():
         # Pose estimation
         result = estimator.estimate(frame)
 
+        if result is not None:
+            # Update body calibration
+            calibration.update(result)
+
+            # Detect view (front / side / unclear)
+            view_mode = view_detector.detect_view(result)
+        else:
+            view_mode = "front"
+
         # Draw skeleton (green for now, no alerts yet)
         draw_skeleton(frame, result, has_alerts=False)
 
-        # Placeholder status (will be replaced by real calibration/view detection)
-        draw_status(frame, calibrated=False, view_mode="front")
+        # Status bar
+        draw_status(frame, calibrated=calibration.is_calibrated(), view_mode=view_mode)
 
         cv2.imshow("MovementCoach", frame)
 
