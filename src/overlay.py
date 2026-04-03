@@ -37,15 +37,24 @@ def draw_feedback(frame, messages, rep_count=0):
     h, w = frame.shape[:2]
 
     # Rep count top-right
-    cv2.putText(frame, f"Reps: {rep_count}", (w - 160, 40),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 255), 2)
+    cv2.putText(frame, f"Reps: {rep_count}", (w - 200, 45),
+                cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255), 3)
 
     # Feedback messages top-left
-    y = 40
+    y = 45
     for msg in messages:
+        # "+ N more" indicator in lighter color
+        if msg.startswith("+"):
+            color = (180, 180, 180)
+            scale = 0.7
+            thickness = 2
+        else:
+            color = (0, 100, 255)
+            scale = 0.85
+            thickness = 2
         cv2.putText(frame, msg, (10, y),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 100, 255), 2)
-        y += 30
+                    cv2.FONT_HERSHEY_SIMPLEX, scale, color, thickness)
+        y += 35
 
 
 def draw_status(frame, calibrated, view_mode):
